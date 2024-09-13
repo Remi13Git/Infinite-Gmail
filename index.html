@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Gmail</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #0a7ff7;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+            padding: 20px;
+        }
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            line-height: 1.6;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .code-block {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        img {
+            max-width: 100%;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        a {
+            color: #0a7ff7;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Infinite Gmail</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>Présentation du projet</h2>
+            <p>Ce projet a pour but d'aider les utilisateurs à générer automatiquement toutes les combinaisons possibles de leur adresse Gmail en utilisant le déplacement des points dans le nom d'utilisateur. En effet, Gmail ignore les points dans les adresses e-mails, ce qui permet de créer  de nombreuses combinaisons possibles tout en recevant à chaque fois l'email sur sa boîte principale.</p>
+        </section>
+
+        <section>
+            <h2>Fonctionnement</h2>
+            <p>Le script utilise une approche récursive pour générer toutes les combinaisons possibles d'une adresse e-mail donnée. Voici un extrait du code :</p>
+
+            <div class="code-block">
+                <pre>
+import csv
+
+current_address = "michel.martin@gmail.com"
+
+def generate_combinations(word):
+    if len(word) == 1:
+        return [word]
+
+    combinations = []
+    # Ajouter un point entre chaque lettre
+    for i in range(1, len(word)):
+        prefix = word[:i]
+        suffix = word[i:]
+        for suffix_combination in generate_combinations(suffix):
+            combinations.append(prefix + '.' + suffix_combination)
+
+    # Ne pas ajouter de point
+    for suffix_combination in generate_combinations(word[1:]):
+        combinations.append(word[0] + suffix_combination)
+
+    return combinations
+
+def write_combinations_to_csv(combinations, filename):
+    with open(filename, 'w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        for combination in combinations:
+            csvwriter.writerow([combination + "@gmail.com"])
+
+def main():
+    word = current_address.replace('.', '').split('@')[0]
+    combinations = generate_combinations(word)
+    print("Nombre total de combinaisons:", len(combinations))
+    write_combinations_to_csv(combinations, "combinations.csv")
+
+if __name__ == "__main__":
+    main()
+                </pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>Exemple</h2>
+            <p>Dans l'exemple ci-dessous, nous avons généré la totalité des combinaisons possibles (28657) en moins d'1&nbsp;seconde pour l'adresse michel.martin@gmail.com. L'utilisateur pourra toutes les utiliser sans aucun soucis pour éviter le spam ou pour les services qui demandent de nouvelles adresses e-mail.</p>
+            <img src="images/infinite.png">
+        </section>
+
+        <section>
+            <h2>Essayer par vous-même</h2>
+            <p>Vous pouvez trouver le code complet sur mon <a href="https://github.com/Remi13Git/Infinite-Gmail" target="_blank">dépôt GitHub</a>. Téléchargez-le et essayez de générer vos propres combinaisons d'adresses e-mails en modifiant la variable <code>current_address</code>.</p>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Créé avec passion ♡ par <a href="https://remihopsore.fr/" target="_blank" style="text-decoration: underline;">Rémi Hopsore</a></p>
+    </footer>
+
+</body>
+</html>
